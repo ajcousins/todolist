@@ -1,0 +1,23 @@
+{
+  "name": "todolist",
+  "version": "1.0.0",
+  "description": "to do list",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/ilovelamp1024/todolist.git"
+  },
+  "author": "Alvin Cousins",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ilovelamp1024/todolist/issues"
+  },
+  "homepage": "https://github.com/ilovelamp1024/todolist#readme",
+  "devDependencies": {
+    "webpack": "^5.24.4",
+    "webpack-cli": "^4.5.0"
+  }
+}
