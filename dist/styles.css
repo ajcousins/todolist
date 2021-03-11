@@ -74,6 +74,70 @@ body {
     top: 2px;
 }
 
+
+.pressed {
+    position: relative;
+    text-align: center;
+    background-color: #f1f1f1;
+    border: 1px solid #cacaca;
+    border-radius: 8px;
+    cursor: pointer;
+    padding: 5px 0px;
+    width: 200px;
+    top: 2px;
+    margin-bottom: 10px;
+}
+
+.pressed::before {
+    position: absolute;
+    content: '';
+    background-color: #cacaca;
+    border: 1px solid #cacaca;
+    border-radius: 8px;
+    left: -1px;
+    top: 3px;
+    width: 200px;
+    height: 25px;
+    z-index: -1;
+}
+
+.projectNewButton {
+    color: #c4c4c4;
+    position: relative;
+    text-align: center;
+    border: 1px dashed #cacaca;
+    border-radius: 8px;
+    cursor: pointer;
+    padding: 5px 0px;
+    width: 200px;
+    margin-bottom: 10px;
+}
+
+.projectNewButtonPressed {
+    color: #c4c4c4;
+    position: relative;
+    text-align: center;
+    border: 1px dashed #cacaca;
+    border-radius: 8px;
+    cursor: pointer;
+    padding: 1px 0px;
+    width: 200px;
+    margin-bottom: 10px;
+}
+
+.projectInput {
+    color: #6e6e6e;
+    text-align: center;
+    font-family: Helvetica-Condensed;
+    font-size: 12pt;
+    padding: 2px;
+    border-style: none;
+    margin: 6px 0px 6px 0px;
+}
+.projectInput:focus {
+    outline: none;
+}
+
 .addButton {
     color: #ffffff;
     font-size: 10pt;

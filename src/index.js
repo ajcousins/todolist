@@ -2,7 +2,6 @@
 import newTaskExpand from './newTaskExpand';
 import renderProjectsList from './renderProjectsList';
 
-console.log("Working");
 
 
 // Project list module. ONE list of projects, where each project contains a list of tasks.
@@ -13,7 +12,7 @@ const projects = {
         this.projectsList.push(project);
     },
     activeProjectName: function () {
-        return this.projectsList[0].projectTitle;
+        return this.projectsList[this.activeProjectIndex].projectTitle;
     }
 }
 
@@ -33,8 +32,6 @@ projects.add(defaultProject);
 const codingProject = new Project('Coding');
 projects.add(codingProject);
 
-console.log(projects.projectsList);
-console.log(projects.activeProjectName());
 
 
 class Task {
@@ -58,12 +55,23 @@ defaultProject.add(example2);
 // Interface Module. Revealing module pattern.
 const front = (function () {
 
-    cacheDom();
-    display();
-    renderProjectsList(projects.projectsList);
+    renderProjectsList(projects);
+    projectsListListeners();
+    renderTaskList();
+    newProjectButton();
 
-    function cacheDom() {
-        
+    function projectsListListeners() {
+        let domProjectsList = document.querySelectorAll(".projectButton");
+        domProjectsList = Array.from(domProjectsList);
+        for (let i = 0; i < domProjectsList.length; i++) {
+            domProjectsList[i].addEventListener("click", () => {
+                projects.activeProjectIndex = i;
+                renderProjectsList(projects);
+                projectsListListeners();
+                renderTaskList();
+                newProjectButton();
+            });
+        }
     }
 
     function addToList(value) {
@@ -72,8 +80,6 @@ const front = (function () {
         let dateDue;
         let priority;
         let projectName = projects.activeProjectName();
-        //let projectName = projects.activeProjectName;
-        //console.log(projectName);
         if (value.type === "click" || value.key === "Enter") {
             title = document.querySelector("#titleInput").value;
             notes = document.querySelector("#notes").value;
@@ -83,13 +89,11 @@ const front = (function () {
         } else {
             title = value
         }
-
         let item = new Task (title, notes, dateDue, priority, projectName);
-        defaultProject.add(item);
+        let index = projects.activeProjectIndex;
+        projects.projectsList[index].add(item);
         document.querySelector("#titleInput").value = "";
-        console.log(projects.projectsList);
-        display();
-        
+        renderTaskList();
     }
 
     function newTaskButton() {
@@ -108,23 +112,57 @@ const front = (function () {
             });
         })
         anchor.appendChild(newButton);
-        
+    }
+
+    function newProjectButton() {
+        let anchor = document.querySelector(".projectWrapper");
+        let newButton = document.createElement("div");
+        newButton.id = "newProjectButton";
+        newButton.classList.add("projectNewButton");
+        newButton.textContent = "Add New Project";
+        newButton.addEventListener("click", () => {
+            //newProjectExpand(); ?
+            newButton.classList.remove("projectNewButton");
+            newButton.textContent = "";
+            newButton.classList.add("projectNewButtonPressed");
+            let input = document.createElement("input");
+            input.setAttribute("class", "projectInput");
+            input.setAttribute("type", "text");
+            //input.setAttribute("id", "newProject");
+            newButton.appendChild(input);
+            input.focus();
+            input.addEventListener("keypress", function (e) {
+                if (e.key === "Enter") {
+                    console.log(projects.projectsList.length);
+                    projects.activeProjectIndex = projects.projectsList.length;
+                    let value = input.value;
+                    let newProject = new Project(value);
+                    projects.add(newProject);
+
+
+                    renderProjectsList(projects);
+                    projectsListListeners();
+                    renderTaskList();
+                    newProjectButton();
+                }
+            })
+            
+        })
+        anchor.appendChild(newButton);
     }
 
 
-
-    function display() {
+    function renderTaskList() {
         //debugger;
         let anchor = document.querySelector("#content")
 
-        // console.log("Display Function called");
-        // 1. Clear current display.
+        // 1. Clear current renderTaskList.
         anchor.innerHTML = "";
         
         // 2. Check which project is currently active.
         let index = projects.activeProjectIndex;
 
-        // 3. Populate display with tasks from current/ active project.
+        // 3. Populate renderTaskList with tasks from current/ active project.
         for (let i = 0; i < projects.projectsList[index].itemList.length; i++) {
             let item =  document.createElement("li");
             item.textContent = projects.projectsList[index].itemList[i].title;
