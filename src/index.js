@@ -45,8 +45,8 @@ class Task {
     }
 }
 // Make new filler tasks
-const example1 = new Task ('Wash dishes', 'Clean all of the dishes', '21-03-09', 'high', 'Default');
-const example2 = new Task ('Shower', '...', '21-03-09', 'low', 'Default');
+const example1 = new Task ('Heat pan', 'First thing in the morning', '21-03-09', 'high', 'Default');
+const example2 = new Task ('Make pancakes', '...', '21-03-09', 'low', 'Default');
 defaultProject.add(example1);
 defaultProject.add(example2);
 
@@ -102,6 +102,7 @@ const front = (function () {
         newButton.id = "newTaskButton";
         newButton.classList.add("addNewItem");
         newButton.textContent = "Add new task";
+        anchor.appendChild(newButton);
         newButton.addEventListener("click", () => {
             newTaskExpand();
             submit.addEventListener("click", addToList);
@@ -111,7 +112,6 @@ const front = (function () {
                 }
             });
         })
-        anchor.appendChild(newButton);
     }
 
     function newProjectButton() {
@@ -121,36 +121,47 @@ const front = (function () {
         newButton.classList.add("projectNewButton");
         newButton.textContent = "Add New Project";
         newButton.addEventListener("click", () => {
-            //newProjectExpand(); ?
-            newButton.classList.remove("projectNewButton");
-            newButton.textContent = "";
-            newButton.classList.add("projectNewButtonPressed");
+            anchor.removeChild(newButton);
+            let projectInput = document.createElement("div");
+            projectInput.classList.add("projectNewButtonPressed");
+            anchor.appendChild(projectInput);
+
             let input = document.createElement("input");
             input.setAttribute("class", "projectInput");
             input.setAttribute("type", "text");
-            //input.setAttribute("id", "newProject");
-            newButton.appendChild(input);
+            input.setAttribute("id", "newProject");
+            projectInput.appendChild(input);
             input.focus();
             input.addEventListener("keypress", function (e) {
                 if (e.key === "Enter") {
-                    console.log(projects.projectsList.length);
-                    projects.activeProjectIndex = projects.projectsList.length;
-                    let value = input.value;
-                    let newProject = new Project(value);
-                    projects.add(newProject);
-
-
-                    renderProjectsList(projects);
-                    projectsListListeners();
-                    renderTaskList();
-                    newProjectButton();
+                    addToProjectsList (input.value);  
                 }
+            }) 
+            let buttonAdd = document.createElement("div");
+            buttonAdd.setAttribute("class", "addButton");
+            buttonAdd.setAttribute("id", "projectSubmit");
+            buttonAdd.textContent = "Add";
+            anchor.appendChild(buttonAdd);
+            buttonAdd.addEventListener("click", () => {
+                console.log(input.value);
+                addToProjectsList(input.value);
             })
-            
         })
         anchor.appendChild(newButton);
     }
 
+
+    function addToProjectsList (input) {
+        //console.log(projects.projectsList.length);
+        projects.activeProjectIndex = projects.projectsList.length;
+        let value = input;
+        let newProject = new Project(value);
+        projects.add(newProject);
+        renderProjectsList(projects);
+        projectsListListeners();
+        renderTaskList();
+        newProjectButton();
+    }
 
     function renderTaskList() {
         //debugger;
