@@ -24,6 +24,11 @@ body {
 }
 */
 
+em {
+    font-style: normal;
+    color: #c4c4c4;
+}
+
 .headingWrapper {
     height: 100px;
 }
@@ -47,7 +52,7 @@ body {
     color: #6e6e6e;
     position: relative;
     text-align: center;
-    background-color: rgb(255, 255, 255);
+    background-color: #ffffff;
     border: 1px solid #cacaca;
     border-radius: 8px;
     cursor: pointer;
@@ -78,8 +83,9 @@ body {
 .pressed {
     position: relative;
     text-align: center;
-    background-color: #f1f1f1;
-    border: 1px solid #cacaca;
+    color: #6e6e6e;
+    background-color: #f1f1f7;
+    border: 1px solid #e2e2e2;
     border-radius: 8px;
     cursor: pointer;
     padding: 5px 0px;
@@ -171,11 +177,83 @@ body {
     top: 2px;
 }
 
+
+.deleteButton {
+    color: #ffffff;
+    font-size: 10pt;
+    position: relative;
+    text-align: center;
+    background-color: #ff9090;
+    border: 1px solid #ff5a5a;
+    border-radius: 8px;
+    cursor: pointer;
+    padding: 5px 0px;
+    width: 50px;
+    margin-bottom: 10px;
+    margin-left: 5px;
+}
+.deleteButton::before {
+    position: absolute;
+    content: '';
+    background-color: #ff5a5a;
+    border: 1px solid #ff5a5a;
+    border-radius: 8px;
+    left: -1px;
+    top: 2px;
+    width: 50px;
+    height: 25px;
+    z-index: -1;
+}
+.deleteButton:active::before {
+    top: 0px;
+}
+.deleteButton:active {
+    top: 2px;
+}
+
+.editButton {
+    color: #ffffff;
+    font-size: 10pt;
+    position: relative;
+    text-align: center;
+    background-color: #90a4ff;
+    border: 1px solid #5a78ff;
+    border-radius: 8px;
+    cursor: pointer;
+    padding: 5px 0px;
+    width: 50px;
+    margin-bottom: 10px;
+    margin-left:auto;
+}
+.editButton::before {
+    position: absolute;
+    content: '';
+    background-color: #5a78ff;
+    border: 1px solid #5a78ff;
+    border-radius: 8px;
+    left: -1px;
+    top: 2px;
+    width: 50px;
+    height: 25px;
+    z-index: -1;
+}
+.editButton:active::before {
+    top: 0px;
+}
+.editButton:active {
+    top: 2px;
+}
+
+
+
+
 /**** LIST ELEMENTS ****/
 .listItem {
     border: 1px solid #cacaca;
     border-radius: 16px;
     cursor: pointer;
+    
+    
     padding: 10px 20px;
     margin-bottom: 8px;
     list-style: none;
@@ -183,6 +261,63 @@ body {
     font-size: 1.5em;
     color: #6e6e6e;
 }
+
+.listUpper {
+    display: flex;
+    align-items: baseline;
+}
+
+.listLower {
+    display: flex;
+    align-items: baseline;
+    margin-top: 10px;
+    font-family: Helvetica-Condensed-Light;
+    font-size: 16px;
+}
+
+.pressZone {
+    margin-left: auto;
+    position: relative;
+    background-color: rgb(255, 255, 255);
+    padding: 8px 8px 8px 25px;
+
+}
+
+.itemTriangle {
+    width: 0;
+    height: 0;
+    
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-top: 10px solid #cacaca;
+   
+ 
+
+    
+    /*background-color: #6e6e6e;*/
+}
+
+.itemTriangle:hover {
+    border-top: 10px solid #6e6e6e;
+}
+
+.itemTriangle.flipped {
+    transform: rotate(180deg);
+    top:-6px;
+}
+
+
+.priority {
+    width: 120px;
+ 
+}
+
+.dueDate {
+    width: 150px;
+
+}
+
+
 
 .addNewItem {
     border: 1px dashed #cacaca;
@@ -237,6 +372,7 @@ textarea.notes {
     width: 98%;
     resize:vertical;
 }
+
 
 
 

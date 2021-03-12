@@ -1,5 +1,6 @@
 
 import newTaskExpand from './newTaskExpand';
+import newProjectExpand from './newProjectExpand';
 import renderProjectsList from './renderProjectsList';
 
 
@@ -45,8 +46,8 @@ class Task {
     }
 }
 // Make new filler tasks
-const example1 = new Task ('Heat pan', 'First thing in the morning', '21-03-09', 'high', 'Default');
-const example2 = new Task ('Make pancakes', '...', '21-03-09', 'low', 'Default');
+const example1 = new Task ('Heat pan', 'First thing in the morning', '2021-03-09', 'High', 'Default');
+const example2 = new Task ('Make pancakes', '...', '2021-03-09', 'Low', 'Default');
 defaultProject.add(example1);
 defaultProject.add(example2);
 
@@ -122,29 +123,17 @@ const front = (function () {
         newButton.textContent = "Add New Project";
         newButton.addEventListener("click", () => {
             anchor.removeChild(newButton);
-            let projectInput = document.createElement("div");
-            projectInput.classList.add("projectNewButtonPressed");
-            anchor.appendChild(projectInput);
-
-            let input = document.createElement("input");
-            input.setAttribute("class", "projectInput");
-            input.setAttribute("type", "text");
-            input.setAttribute("id", "newProject");
-            projectInput.appendChild(input);
-            input.focus();
-            input.addEventListener("keypress", function (e) {
+            
+            let events = newProjectExpand(anchor);
+            events.input.addEventListener("keypress", function (e) {
                 if (e.key === "Enter") {
-                    addToProjectsList (input.value);  
+                    if (!events.input.value) return;
+                    addToProjectsList (events.input.value);  
                 }
             }) 
-            let buttonAdd = document.createElement("div");
-            buttonAdd.setAttribute("class", "addButton");
-            buttonAdd.setAttribute("id", "projectSubmit");
-            buttonAdd.textContent = "Add";
-            anchor.appendChild(buttonAdd);
-            buttonAdd.addEventListener("click", () => {
-                console.log(input.value);
-                addToProjectsList(input.value);
+            events.buttonAdd.addEventListener("click", () => {
+                if (!events.input.value) return;
+                addToProjectsList(events.input.value);
             })
         })
         anchor.appendChild(newButton);
@@ -166,6 +155,7 @@ const front = (function () {
     function renderTaskList() {
         //debugger;
         let anchor = document.querySelector("#content")
+        //let expandedList = [];
 
         // 1. Clear current renderTaskList.
         anchor.innerHTML = "";
@@ -176,8 +166,38 @@ const front = (function () {
         // 3. Populate renderTaskList with tasks from current/ active project.
         for (let i = 0; i < projects.projectsList[index].itemList.length; i++) {
             let item =  document.createElement("li");
-            item.textContent = projects.projectsList[index].itemList[i].title;
             item.classList.add("listItem");
+
+            let listUpper = document.createElement("div");
+            listUpper.classList.add("listUpper");
+            listUpper.textContent = projects.projectsList[index].itemList[i].title;
+            item.appendChild(listUpper);
+
+            let pressZone = document.createElement("div");
+            pressZone.classList.add("pressZone");
+
+            let triangle = document.createElement("div");
+            triangle.classList.add("itemTriangle");
+            pressZone.appendChild(triangle);
+            listUpper.appendChild(pressZone);
+
+            let listLowerSecton = document.createElement("div");
+            listLowerSecton.classList.add("listLowerSecton");
+            item.appendChild(listLowerSecton);
+
+            pressZone.addEventListener("click", ()=> {
+                if (triangle.classList.contains("flipped")) {
+                    triangle.classList.remove("flipped");
+                    colapseTask(listLowerSecton);
+                } else {
+                    triangle.classList.add("flipped");
+                    expandTask(listLowerSecton, projects.projectsList[index].itemList[i]);
+                }
+
+            })
+
+
+
             anchor.appendChild(item);
         }
 
@@ -194,5 +214,63 @@ const front = (function () {
 
 
 
+function expandTask (domItem, listObject) {
+    console.log("Expand task");
+    console.log(domItem, listObject);
+    
+    const anchor = domItem;
 
+    const dateDue = listObject.dateDue;
+    const dateFormat = `${dateDue[8]}${dateDue[9]}/${dateDue[5]}${dateDue[6]}/${dateDue[2]}${dateDue[3]}`
+
+    let listLowerA = document.createElement("div");
+    listLowerA.classList.add("listLower");
+
+    let dueDate = document.createElement("div");
+    dueDate.classList.add("dueDate");
+    dueDate.innerHTML = `<em>Date: </em>${dateFormat}`
+
+    let priority = document.createElement("div");
+    priority.classList.add("priority");
+    priority.innerHTML = `<em>Priority: </em>${listObject.priority}`
+
+    listLowerA.appendChild(dueDate);
+    listLowerA.appendChild(priority);
+    anchor.appendChild(listLowerA);
+
+    ////
+    let listLowerB = document.createElement("div");
+    listLowerB.classList.add("listLower");
+
+    let notes = document.createElement("div");
+    notes.classList.add("notes");
+    notes.innerHTML = `${listObject.notes}`
+
+    listLowerB.appendChild(notes);
+    anchor.appendChild(listLowerB);
+
+    ////
+    let listLowerC = document.createElement("div");
+    listLowerC.classList.add("listLower");
+
+    let editButton = document.createElement("div");
+    editButton.classList.add("editButton");
+    editButton.textContent = "Edit";
+
+    let deleteButton = document.createElement("div");
+    deleteButton.classList.add("deleteButton");
+    deleteButton.textContent = "Delete";
+
+    listLowerC.appendChild(editButton);
+    listLowerC.appendChild(deleteButton);
+    anchor.appendChild(listLowerC);
+
+
+}
+
+
+function colapseTask (domItem) {
+    const anchor = domItem;
+    anchor.innerHTML = "";
+}
 

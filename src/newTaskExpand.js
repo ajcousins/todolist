@@ -40,17 +40,17 @@ function newTaskExpand() {
     form.appendChild(selecta);
 
     let optiona = document.createElement("option");
-    optiona.setAttribute("value", "high");
+    optiona.setAttribute("value", "High");
     optiona.textContent = "High";
     selecta.appendChild(optiona);
 
     let optionb = document.createElement("option");
-    optionb.setAttribute("value", "medium");
+    optionb.setAttribute("value", "Medium");
     optionb.textContent = "Medium";
     selecta.appendChild(optionb);
 
     let optionc = document.createElement("option");
-    optionc.setAttribute("value", "low");
+    optionc.setAttribute("value", "Low");
     optionc.textContent = "Low";
     selecta.appendChild(optionc);
 
