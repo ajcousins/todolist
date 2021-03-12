@@ -35,14 +35,22 @@ em {
 
 .mainWrapper {
     display: flex;
+    justify-content: center;
 }
 
 .projectWrapper {
     width: 210px;
-    margin: 10px;
+    margin: 45px 10px 10px 10px;
 }
 
-.listWrapper {
+.projectLabel {
+    color: #6e6e6e;
+    font-size: 20px;
+    margin-bottom: 10px;
+    margin-left: 20px;
+}
+
+.listWrapperOuter {
     width: 50%;
     margin: 10px;
 }

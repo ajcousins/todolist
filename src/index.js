@@ -1,7 +1,8 @@
-
 import newTaskExpand from './newTaskExpand';
 import newProjectExpand from './newProjectExpand';
 import renderProjectsList from './renderProjectsList';
+import expandTask from './expandTask';
+import colapseTask from './colapseTask';
 
 
 
@@ -27,11 +28,19 @@ class Project {
     add (item) {
         this.itemList.push(item);
     }
+
+    delete (index) {
+        this.itemList.splice(index, 1);
+    }
+
+    update(item, index) {
+        console.log("update");
+        this.itemList.splice(index, 1, item)
+
+
+    }
+
 }
-const defaultProject = new Project('Default');
-projects.add(defaultProject);
-const codingProject = new Project('Coding');
-projects.add(codingProject);
 
 
 
@@ -45,12 +54,21 @@ class Task {
         this.done = false;
     }
 }
-// Make new filler tasks
+// Make new filler projects and tasks.
+const defaultProject = new Project('Default');
+const musicProject = new Project('Music Project');
 const example1 = new Task ('Heat pan', 'First thing in the morning', '2021-03-09', 'High', 'Default');
 const example2 = new Task ('Make pancakes', '...', '2021-03-09', 'Low', 'Default');
+const example3 = new Task ('Eat pancakes', '...', '2021-03-09', 'Low', 'Default');
+const example4 = new Task ('Play concert', 'Before bed.', '2021-03-19', 'High', 'Music Project');
+const example5 = new Task ('Smash guitar', '...', '2021-03-19', 'High', 'Music Project');
+projects.add(defaultProject);
+projects.add(musicProject);
 defaultProject.add(example1);
 defaultProject.add(example2);
-
+defaultProject.add(example3);
+musicProject.add(example4);
+musicProject.add(example5);
 
 
 // Interface Module. Revealing module pattern.
@@ -67,11 +85,21 @@ const front = (function () {
         for (let i = 0; i < domProjectsList.length; i++) {
             domProjectsList[i].addEventListener("click", () => {
                 projects.activeProjectIndex = i;
+                updateProjectListTitle(i);
                 renderProjectsList(projects);
                 projectsListListeners();
                 renderTaskList();
                 newProjectButton();
             });
+        }
+    }
+
+    function updateProjectListTitle(index) {
+        let projectLabel = document.querySelector(".projectLabel");
+        if (!index) {
+            projectLabel.innerHTML = "To Do List"
+        } else {
+            projectLabel.innerHTML = projects.projectsList[index].projectTitle;
         }
     }
 
@@ -141,11 +169,11 @@ const front = (function () {
 
 
     function addToProjectsList (input) {
-        //console.log(projects.projectsList.length);
         projects.activeProjectIndex = projects.projectsList.length;
         let value = input;
         let newProject = new Project(value);
         projects.add(newProject);
+        updateProjectListTitle(projects.activeProjectIndex)
         renderProjectsList(projects);
         projectsListListeners();
         renderTaskList();
@@ -191,22 +219,33 @@ const front = (function () {
                     colapseTask(listLowerSecton);
                 } else {
                     triangle.classList.add("flipped");
-                    expandTask(listLowerSecton, projects.projectsList[index].itemList[i]);
+                    expandTask(listLowerSecton, projects.projectsList[index].itemList[i], i);
+                    
+                    // Add event listener for delete button.
+                    let deleteButton = item.querySelector(".deleteButton");
+                    deleteButton.addEventListener("click", () => {
+                        let deleteIndex = deleteButton.id.split("-");
+                        projects.projectsList[index].delete(deleteIndex[1]);
+                        renderTaskList();
+                    })
+
+                    // Add event listener for edit button.
+                    let editButton = item.querySelector(".editButton");
+                    editButton.addEventListener("click", () => {
+                        let editIndex = editButton.id.split("-");
+                        editTask(item, projects.projectsList[index].itemList[i], i);
+                    })
                 }
-
             })
-
-
-
             anchor.appendChild(item);
         }
-
         // 4. Add new task button to end of list.
         newTaskButton();
     }
 
     return {
         addToList: addToList,
+        renderTaskList: renderTaskList,
         // Add other public functions here.
     }
 
@@ -214,63 +253,46 @@ const front = (function () {
 
 
 
-function expandTask (domItem, listObject) {
-    console.log("Expand task");
-    console.log(domItem, listObject);
-    
-    const anchor = domItem;
 
-    const dateDue = listObject.dateDue;
-    const dateFormat = `${dateDue[8]}${dateDue[9]}/${dateDue[5]}${dateDue[6]}/${dateDue[2]}${dateDue[3]}`
-
-    let listLowerA = document.createElement("div");
-    listLowerA.classList.add("listLower");
-
-    let dueDate = document.createElement("div");
-    dueDate.classList.add("dueDate");
-    dueDate.innerHTML = `<em>Date: </em>${dateFormat}`
-
-    let priority = document.createElement("div");
-    priority.classList.add("priority");
-    priority.innerHTML = `<em>Priority: </em>${listObject.priority}`
-
-    listLowerA.appendChild(dueDate);
-    listLowerA.appendChild(priority);
-    anchor.appendChild(listLowerA);
-
-    ////
-    let listLowerB = document.createElement("div");
-    listLowerB.classList.add("listLower");
-
-    let notes = document.createElement("div");
-    notes.classList.add("notes");
-    notes.innerHTML = `${listObject.notes}`
-
-    listLowerB.appendChild(notes);
-    anchor.appendChild(listLowerB);
-
-    ////
-    let listLowerC = document.createElement("div");
-    listLowerC.classList.add("listLower");
-
-    let editButton = document.createElement("div");
-    editButton.classList.add("editButton");
-    editButton.textContent = "Edit";
-
-    let deleteButton = document.createElement("div");
-    deleteButton.classList.add("deleteButton");
-    deleteButton.textContent = "Delete";
-
-    listLowerC.appendChild(editButton);
-    listLowerC.appendChild(deleteButton);
-    anchor.appendChild(listLowerC);
-
-
-}
-
-
-function colapseTask (domItem) {
-    const anchor = domItem;
+function editTask(domElement, listItem, index) {
+    const anchor = domElement;
     anchor.innerHTML = "";
+
+    newTaskExpand(domElement, listItem, index);
+
+    // Add event listeners here.
+    let updateButton = document.querySelector(`#editSubmit-${index}`)
+    let titleInput = document.getElementById(`titleInputEdit-${index}`)
+    updateButton.addEventListener("click", (e) => {
+        editToList(e, index);
+    })
+    titleInput.addEventListener("keypress", function (e) {
+        if (e.key === "Enter") {
+            editToList(e, index);
+        }
+    });
 }
 
+
+function editToList(value, index) {
+    let title;
+    let notes;
+    let dateDue;
+    let priority;
+    let projectName = projects.activeProjectName();
+    if (value.type === "click" || value.key === "Enter") {
+        title = document.querySelector(`#titleInputEdit-${index}`).value;
+        notes = document.querySelector(`#notesEdit-${index}`).value;
+        dateDue = document.querySelector(`#dateDueEdit-${index}`).value;
+        priority = document.querySelector(`#priorityEdit-${index}`).value;
+        if (!title) return;
+    } 
+ 
+    let item = new Task (title, notes, dateDue, priority, projectName);
+    console.log(item);
+    
+    let projectIndex = projects.activeProjectIndex;
+    projects.projectsList[projectIndex].update(item, index);
+
+    front.renderTaskList();
+}
