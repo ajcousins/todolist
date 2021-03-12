@@ -13,6 +13,9 @@ const projects = {
     add: function (project) {
         this.projectsList.push(project);
     },
+    delete: function (index) {
+        this.projectsList.splice(index, 1);
+    },
     activeProjectName: function () {
         return this.projectsList[this.activeProjectIndex].projectTitle;
     }
@@ -34,10 +37,7 @@ class Project {
     }
 
     update(item, index) {
-        console.log("update");
         this.itemList.splice(index, 1, item)
-
-
     }
 
 }
@@ -95,11 +95,22 @@ const front = (function () {
     }
 
     function updateProjectListTitle(index) {
+        let upperPanel = document.querySelector(".upperPanel");
         let projectLabel = document.querySelector(".projectLabel");
         if (!index) {
             projectLabel.innerHTML = "To Do List"
+            upperPanel.removeChild(document.querySelector(".projectDeleteButton"))
         } else {
             projectLabel.innerHTML = projects.projectsList[index].projectTitle;
+            if (document.querySelector(".projectDeleteButton")) return;
+            let deleteButton = document.createElement("div");
+            deleteButton.classList.add("projectDeleteButton");
+            deleteButton.textContent = "Delete";
+            upperPanel.appendChild(deleteButton);
+            deleteButton.addEventListener("click", () => {
+ 
+                deleteProjectConfirmation();
+            })
         }
     }
 
@@ -143,28 +154,33 @@ const front = (function () {
         })
     }
 
-    function newProjectButton() {
-        let anchor = document.querySelector(".projectWrapper");
-        let newButton = document.createElement("div");
-        newButton.id = "newProjectButton";
-        newButton.classList.add("projectNewButton");
-        newButton.textContent = "Add New Project";
-        newButton.addEventListener("click", () => {
-            anchor.removeChild(newButton);
-            
-            let events = newProjectExpand(anchor);
-            events.input.addEventListener("keypress", function (e) {
-                if (e.key === "Enter") {
+    function newProjectButton(value) {
+        if (!value) {
+            let anchor = document.querySelector(".projectWrapper");
+            let newButton = document.createElement("div");
+            newButton.id = "newProjectButton";
+            newButton.classList.add("projectNewButton");
+            newButton.textContent = "Add New Project";
+            newButton.addEventListener("click", () => {
+                anchor.removeChild(newButton);
+                
+                let events = newProjectExpand(anchor);
+                events.input.addEventListener("keypress", function (e) {
+                    if (e.key === "Enter") {
+                        if (!events.input.value) return;
+                        addToProjectsList (events.input.value);  
+                    }
+                }) 
+                events.buttonAdd.addEventListener("click", () => {
                     if (!events.input.value) return;
-                    addToProjectsList (events.input.value);  
-                }
-            }) 
-            events.buttonAdd.addEventListener("click", () => {
-                if (!events.input.value) return;
-                addToProjectsList(events.input.value);
+                    addToProjectsList(events.input.value);
+                })
             })
-        })
-        anchor.appendChild(newButton);
+            anchor.appendChild(newButton);
+
+
+        }
+
     }
 
 
@@ -246,6 +262,10 @@ const front = (function () {
     return {
         addToList: addToList,
         renderTaskList: renderTaskList,
+        projectsListListeners: projectsListListeners,
+        updateProjectListTitle: updateProjectListTitle,
+        renderProjectsList: renderProjectsList,
+        newProjectButton: newProjectButton,
         // Add other public functions here.
     }
 
@@ -289,10 +309,72 @@ function editToList(value, index) {
     } 
  
     let item = new Task (title, notes, dateDue, priority, projectName);
-    console.log(item);
     
     let projectIndex = projects.activeProjectIndex;
     projects.projectsList[projectIndex].update(item, index);
 
     front.renderTaskList();
+}
+
+
+function deleteProjectConfirmation() {
+
+    let index = projects.activeProjectIndex;
+    let projectTitle = projects.projectsList[index].projectTitle;
+
+
+    let modalBackground = document.createElement("div");
+    modalBackground.classList.add("modalBackground");
+    document.body.appendChild(modalBackground);
+    
+
+    let modal = document.createElement("div");
+    modal.classList.add("modal");
+    let textBox = document.createElement("div");
+    textBox.innerHTML = `Are you sure you want to delete ${projectTitle}?<br>
+    All tasks in this project will be deleted permanently.`
+    textBox.classList.add("textBox");
+    modal.appendChild(textBox);
+    
+    let okButton = document.createElement("div");
+    okButton.classList.add("projectButton");
+    okButton.classList.add("modalButtons");
+    okButton.classList.add("ok");
+    okButton.textContent = "OK";
+    textBox.appendChild(okButton);
+
+    let cancelButton = document.createElement("div");
+    cancelButton.classList.add("projectButton");
+    cancelButton.classList.add("modalButtons");
+    cancelButton.textContent = "Cancel";
+    textBox.appendChild(cancelButton);
+
+    document.body.appendChild(modal);
+
+
+    modalBackground.addEventListener("click", () => {
+        document.body.removeChild(modal);
+        document.body.removeChild(modalBackground);
+    })
+
+    okButton.addEventListener("click", () => {
+        projects.delete(index);
+        projects.activeProjectIndex = 0;
+    
+        front.updateProjectListTitle(0);
+        renderProjectsList(projects);
+
+        document.body.removeChild(modal);
+        document.body.removeChild(modalBackground);
+        
+        front.projectsListListeners();
+        front.renderTaskList();
+        front.newProjectButton();
+
+    })
+
+    cancelButton.addEventListener("click", () => {
+        document.body.removeChild(modal);
+        document.body.removeChild(modalBackground);
+    })
 }
