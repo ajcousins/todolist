@@ -104,14 +104,14 @@ class Task {
 
 // Make new filler projects and tasks.
 const defaultProject = new Project('Default');
-const example1 = new Task ('Make pancakes', 'Mix flour, eggs and milk in a bowl.', '2021-03-11', 'Low', 'Default');
-const example2 = new Task ('Heat pan', 'First thing in the morning', '2021-03-10', 'High', 'Default');
-const example3 = new Task ('Eat pancakes', 'Remember lemon and sugar.', '2021-03-12', 'Low', 'Default');
 projects.add(defaultProject);
-defaultProject.add(example1);
-defaultProject.add(example2);
-defaultProject.add(example3);
 
+// const example1 = new Task ('Make pancakes', 'Mix flour, eggs and milk in a bowl.', '2021-03-11', 'Low', 'Default');
+//             const example2 = new Task ('Heat pan', 'First thing in the morning', '2021-03-10', 'High', 'Default');
+//             const example3 = new Task ('Eat pancakes', 'Remember lemon and sugar.', '2021-03-12', 'Low', 'Default');
+//             defaultProject.add(example1);
+//             defaultProject.add(example2);
+//             defaultProject.add(example3);
 
 
 // Interface Module. Revealing module pattern.
@@ -123,6 +123,74 @@ defaultProject.add(example3);
     renderTaskList();
     newProjectButton();
     updateProjectListTitle(0);
+    getLocalStorage();
+
+
+    function getLocalStorage () {
+        
+        // First run
+        if (localStorage.length == 0) {
+            console.log("Empty local storage. Populating with placeholder tasks.");
+
+            // Add to program projects.
+            const example1 = new Task ('Make pancakes', 'Mix flour, eggs and milk in a bowl.', '2021-03-11', 'Low', 'Default');
+            const example2 = new Task ('Heat pan', 'First thing in the morning', '2021-03-10', 'High', 'Default');
+            const example3 = new Task ('Eat pancakes', 'Remember lemon and sugar.', '2021-03-12', 'Low', 'Default');
+            defaultProject.add(example1);
+            defaultProject.add(example2);
+            defaultProject.add(example3);
+            // Add to local storage.
+            for (let i = 0; i < projects.projectsList.length; i++) {
+                let serialised = JSON.stringify(projects.projectsList[i])
+                localStorage.setItem(`project-${i}`, serialised);
+            }
+        } else {
+
+            // Load up contents from local storage.
+
+            for (let i = 0; i < localStorage.length; i++) {
+
+                let deSerialised = JSON.parse(localStorage.getItem(`project-${i}`));
+
+                if (i === 0) {
+                    console.log("Default project");
+                } else {
+                    let project = new Project(deSerialised.projectTitle);
+                    projects.add(project);
+                }
+                console.log("deSerialised", deSerialised);
+                for (let j = 0; j < deSerialised.itemList.length; j++) {
+                    let item = new Task (
+                        deSerialised.itemList[j].title,
+                        deSerialised.itemList[j].notes,
+                        deSerialised.itemList[j].dateDue,
+                        deSerialised.itemList[j].priority,
+                        deSerialised.itemList[j].projectName
+                        )
+                    projects.projectsList[i].add(item);
+                }
+                let serialised = JSON.stringify(projects.projectsList[i])
+                localStorage.setItem(`project-${i}`, serialised);
+    
+            }
+        }
+
+
+
+        console.log(projects);
+        
+        
+        renderProjectsList(projects);
+        projectsListListeners();
+        renderTaskList();
+        newProjectButton();
+        updateProjectListTitle(0);
+
+    }
+
+    function updateLocalStorage() {
+
+    }
 
     function projectsListListeners() {
         let domProjectsList = document.querySelectorAll(".projectButton");
@@ -215,6 +283,7 @@ defaultProject.add(example3);
         } else {
             projects.projectsList[projectIndex].update(item, index);
         }
+        //updateLocalStorage();
         renderTaskList();
     }
 
@@ -292,6 +361,8 @@ defaultProject.add(example3);
         let value = input;
         let newProject = new Project(value);
         projects.add(newProject);
+        let serialised = JSON.stringify(newProject)
+                localStorage.setItem(`project-${projects.activeProjectIndex}`, serialised);
         updateProjectListTitle(projects.activeProjectIndex)
         renderProjectsList(projects);
         projectsListListeners();
@@ -310,6 +381,24 @@ defaultProject.add(example3);
         })
         domObjects.okButton.addEventListener("click", () => {
             projects.delete(index);
+            
+            localStorage.removeItem(`project-${projects.activeProjectIndex}`);
+            // project indexes on local storage need to be reset 0, 1, 2... no gaps.
+            for (let i = 0; i < localStorage.length; i++) {
+                if (i < index) continue;
+                console.log(i);
+ 
+                
+                if (localStorage.getItem(`project-${i}`)) {
+                    console.log(`project-${i} exists!`);
+                } else {
+                    let tempValue = localStorage.getItem(localStorage.key(i));
+                    console.log(`project-${i} does not exist!`);
+                    localStorage.setItem(`project-${i}`, tempValue);
+                }
+
+            }
+
             projects.activeProjectIndex = 0;
             updateProjectListTitle(0);
             renderProjectsList(projects);
