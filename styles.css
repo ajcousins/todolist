@@ -13,16 +13,9 @@
 }
 
 body {
-    /*background-color: rgb(255, 244, 206);*/
     margin: 0px;
     font-family: Helvetica-Condensed;
 }
-
-/*
-.outlineAC {
-    border: 1px dashed rgb(207, 156, 156);
-}
-*/
 
 em {
     font-style: normal;
@@ -45,7 +38,6 @@ em {
 
 .projectLabel {
     color: #6e6e6e;
-    
     font-size: 20px;
     margin-bottom: 10px;
     margin-left: 20px;
@@ -64,18 +56,11 @@ em {
     justify-content: flex-end;
 }
 
-
-
-
-
-
 /**** LIST ELEMENTS ****/
 .listItem {
     border: 1px solid #cacaca;
     border-radius: 16px;
     cursor: pointer;
-    
-    
     padding: 10px 20px;
     margin-bottom: 8px;
     list-style: none;
@@ -83,7 +68,6 @@ em {
     font-size: 1.5em;
     color: #6e6e6e;
 }
-
 
 .taskDoneText {
     color: rgba(0, 0, 0, 0.281);
@@ -113,15 +97,9 @@ em {
 .itemTriangle {
     width: 0;
     height: 0;
-    
     border-left: 15px solid transparent;
     border-right: 15px solid transparent;
     border-top: 10px solid #cacaca;
-   
- 
-
-    
-    /*background-color: #6e6e6e;*/
 }
 
 .itemTriangle:hover {
@@ -133,18 +111,13 @@ em {
     top:-6px;
 }
 
-
 .priority {
     width: 120px;
- 
 }
 
 .dueDate {
     width: 150px;
-
 }
-
-
 
 .addNewItem {
     border: 1px dashed #cacaca;
@@ -213,6 +186,7 @@ textarea.notes {
     width: 200px;
     margin-bottom: 10px;
 }
+
 .projectButton::before {
     position: absolute;
     content: '';
@@ -225,13 +199,14 @@ textarea.notes {
     height: 25px;
     z-index: -1;
 }
+
 .projectButton:active::before {
     top: 0px;
 }
+
 .projectButton:active {
     top: 2px;
 }
-
 
 .pressed {
     position: relative;
@@ -260,7 +235,6 @@ textarea.notes {
     z-index: -1;
 }
 
-
 .projectDeleteButton {
     color: #6e6e6e;
     font-size: 10pt;
@@ -287,8 +261,8 @@ textarea.notes {
     cursor: pointer;
     padding: 5px 0px;
     width: 50px;
-    
 }
+
 .projectDeleteButton:hover::before {
     position: absolute;
     content: '';
@@ -301,9 +275,11 @@ textarea.notes {
     height: 25px;
     z-index: -1;
 }
+
 .projectDeleteButton:active::before {
     top: 0px;
 }
+
 .projectDeleteButton:active {
     top: 0px;
 }
@@ -335,6 +311,7 @@ textarea.notes {
     padding: 5px 0px;
     width: 95px;
 }
+
 .projectSortButton:hover::before {
     position: absolute;
     content: '';
@@ -347,13 +324,14 @@ textarea.notes {
     height: 25px;
     z-index: -1;
 }
+
 .projectSortButton:active::before {
     top: 0px;
 }
+
 .projectSortButton:active {
     top: 0px;
 }
-
 
 .projectNewButton {
     color: #c4c4c4;
@@ -388,6 +366,7 @@ textarea.notes {
     border-style: none;
     margin: 6px 0px 6px 0px;
 }
+
 .projectInput:focus {
     outline: none;
 }
@@ -406,6 +385,7 @@ textarea.notes {
     margin-bottom: 10px;
     margin-left:5px;
 }
+
 .addButton::before {
     position: absolute;
     content: '';
@@ -418,13 +398,14 @@ textarea.notes {
     height: 25px;
     z-index: -1;
 }
+
 .addButton:active::before {
     top: 0px;
 }
+
 .addButton:active {
     top: 2px;
 }
-
 
 .deleteButton {
     color: #ffffff;
@@ -440,6 +421,7 @@ textarea.notes {
     margin-bottom: 10px;
     margin-left: 5px;
 }
+
 .deleteButton::before {
     position: absolute;
     content: '';
@@ -452,9 +434,11 @@ textarea.notes {
     height: 25px;
     z-index: -1;
 }
+
 .deleteButton:active::before {
     top: 0px;
 }
+
 .deleteButton:active {
     top: 2px;
 }
@@ -474,6 +458,7 @@ textarea.notes {
     margin-left:auto;
     text-decoration: none;
 }
+
 .editButton::before {
     position: absolute;
     content: '';
@@ -486,17 +471,16 @@ textarea.notes {
     height: 25px;
     z-index: -1;
 }
+
 .editButton:active::before {
     top: 0px;
 }
+
 .editButton:active {
     top: 2px;
 }
 
-
-
 /**** MODAL ****/
-
 .modalBackground {
     position: absolute;
     top: 0px;
@@ -542,9 +526,6 @@ textarea.notes {
     justify-content: flex-end;
 }
 
-
-
-
 @media screen and (max-width: 600px) {
     body {
         background-color: rgb(255, 255, 255);
@@ -563,6 +544,7 @@ textarea.notes {
         margin: 5%;
         width: auto;
     }
+
     .content {
         margin: 0px;
     }
@@ -575,12 +557,10 @@ textarea.notes {
         margin: 5%;
     }
 
-
     .modalBackground {
         position: absolute;
         top: 0px;
         left: 0px;
-
         background-color: rgba(255, 255, 255, 0.5);
     }
     
@@ -596,8 +576,8 @@ textarea.notes {
         border: 1px solid #cacaca;
         border-radius: 0px;
         align-content: center;
- 
     }
+
     .modalButtons {
         margin: 5% auto 5% auto;
     }
@@ -609,10 +589,5 @@ textarea.notes {
         justify-content: center;
         color: #6e6e6e;
         margin: auto;
-        
-        
-       
-        
     }
-
 }
