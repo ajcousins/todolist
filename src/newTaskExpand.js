@@ -74,9 +74,18 @@ function newTaskExpand(domElement, listItem, index) {
     textArea.setAttribute("placeholder", "Notes");
     form.appendChild(textArea);
 
+    let formButtonContainer = document.createElement("div");
+    formButtonContainer.setAttribute("class", "formButtonContainer");
+    form.appendChild(formButtonContainer);
+
+    let buttonCancel = document.createElement("div");
+    buttonCancel.setAttribute("class", "addButton");
+    buttonCancel.textContent = "Cancel";
+    formButtonContainer.appendChild(buttonCancel);
+
     let buttonAdd = document.createElement("div");
     buttonAdd.setAttribute("class", "addButton");
-    form.appendChild(buttonAdd);
+    formButtonContainer.appendChild(buttonAdd);
 
     if (listItem) {
         // Updating an existing task.
@@ -88,6 +97,7 @@ function newTaskExpand(domElement, listItem, index) {
         textArea.setAttribute("id", `notesEdit-${index}`);
         textArea.innerHTML = `${listItem.notes}`;
         buttonAdd.setAttribute("id", `editSubmit-${index}`);
+        buttonCancel.setAttribute("id", `editCancel-${index}`);
         buttonAdd.textContent = "Update";
         document.getElementById(`titleInputEdit-${index}`).focus();
     } else {
@@ -98,6 +108,7 @@ function newTaskExpand(domElement, listItem, index) {
         selecta.setAttribute("id", "priority");
         textArea.setAttribute("id", "notes");
         buttonAdd.setAttribute("id", "submit");
+        buttonCancel.setAttribute("id", "cancel");
         buttonAdd.textContent = "Add";
         document.getElementById("titleInput").focus();
     }

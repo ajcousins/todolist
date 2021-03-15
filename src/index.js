@@ -40,6 +40,52 @@ class Project {
         this.itemList.splice(index, 1, item)
     }
 
+    markAsDone (index) {
+        this.itemList[index].changeStatus();
+    }
+
+    sortItemsByDate () {
+        this.itemList = this.itemList.sort((a, b) => {
+            let tmpA = parseInt(a.dateDue.split("-").join(""));
+            let tmpB = parseInt(b.dateDue.split("-").join(""));
+            if (tmpA > tmpB) return 1;
+            else return -1;
+        })
+    }
+
+    sortItemsByPriority () {
+        this.itemList = this.itemList.sort((a, b) => {
+            let tmpA;
+            let tmpB;
+            switch(a.priority) {
+                case "High":
+                    tmpA = 3;
+                    break;
+                case "Medium":
+                    tmpA = 2;
+                    break;
+                case "Low":
+                    tmpA = 1;
+                    break;
+            }
+            switch(b.priority) {
+                case "High":
+                    tmpB = 3;
+                    break;
+                case "Medium":
+                    tmpB = 2;
+                    break;
+                case "Low":
+                    tmpB = 1;
+                    break;
+            }
+            if (tmpA < tmpB) return 1;
+            else return -1;
+        })
+    }
+
+
+
 }
 
 
@@ -53,15 +99,25 @@ class Task {
         this.projectName = projectName;
         this.done = false;
     }
+
+    changeStatus () {
+        if (this.done === false) {
+            this.done = true;
+        } else {
+            this.done = false;
+        }
+    }
+
 }
 // Make new filler projects and tasks.
 const defaultProject = new Project('Default');
 const musicProject = new Project('Music Project');
-const example1 = new Task ('Heat pan', 'First thing in the morning', '2021-03-09', 'High', 'Default');
-const example2 = new Task ('Make pancakes', '...', '2021-03-09', 'Low', 'Default');
-const example3 = new Task ('Eat pancakes', '...', '2021-03-09', 'Low', 'Default');
+const example1 = new Task ('Make pancakes', '...', '2021-03-11', 'Low', 'Default');
+const example2 = new Task ('Heat pan', 'First thing in the morning', '2021-03-10', 'High', 'Default');
+const example3 = new Task ('Eat pancakes', '...', '2021-03-12', 'Low', 'Default');
 const example4 = new Task ('Play concert', 'Before bed.', '2021-03-19', 'High', 'Music Project');
-const example5 = new Task ('Smash guitar', '...', '2021-03-19', 'High', 'Music Project');
+const example5 = new Task ('Tune guitar', '...', '2021-03-15', 'Medium', 'Music Project');
+const example6 = new Task ('Practise music', '...', '2021-03-18', 'Low', 'Music Project');
 projects.add(defaultProject);
 projects.add(musicProject);
 defaultProject.add(example1);
@@ -69,6 +125,7 @@ defaultProject.add(example2);
 defaultProject.add(example3);
 musicProject.add(example4);
 musicProject.add(example5);
+musicProject.add(example6);
 
 
 // Interface Module. Revealing module pattern.
@@ -78,6 +135,7 @@ const front = (function () {
     projectsListListeners();
     renderTaskList();
     newProjectButton();
+    updateProjectListTitle(0);
 
     function projectsListListeners() {
         let domProjectsList = document.querySelectorAll(".projectButton");
@@ -97,19 +155,48 @@ const front = (function () {
     function updateProjectListTitle(index) {
         let upperPanel = document.querySelector(".upperPanel");
         let projectLabel = document.querySelector(".projectLabel");
-        if (!index) {
-            projectLabel.innerHTML = "To Do List"
-            upperPanel.removeChild(document.querySelector(".projectDeleteButton"))
+
+        if (index === 0) {
+            upperPanel.innerHTML = "";
+            projectLabel.textContent = "To Do List";
+            upperPanel.appendChild(projectLabel);
+            addSortingButtons ()
         } else {
-            projectLabel.innerHTML = projects.projectsList[index].projectTitle;
-            if (document.querySelector(".projectDeleteButton")) return;
+            upperPanel.innerHTML = "";
+            projectLabel.textContent = projects.projectsList[index].projectTitle;
+            upperPanel.appendChild(projectLabel);
+            addSortingButtons ()
+
             let deleteButton = document.createElement("div");
             deleteButton.classList.add("projectDeleteButton");
             deleteButton.textContent = "Delete";
             upperPanel.appendChild(deleteButton);
             deleteButton.addEventListener("click", () => {
- 
                 deleteProjectConfirmation();
+            })
+
+
+        }
+
+        function addSortingButtons () {
+            let projIndex = projects.activeProjectIndex
+            let sortButtonA = document.createElement("div");
+            sortButtonA.classList.add("projectSortButton");
+            sortButtonA.textContent = "Sort by Date";
+            upperPanel.appendChild(sortButtonA);
+            sortButtonA.addEventListener("click", () => {
+                projects.projectsList[projIndex].sortItemsByDate();
+                renderTaskList();
+            })
+
+            let sortButtonB = document.createElement("div");
+            sortButtonB.classList.add("projectSortButton");
+            sortButtonB.textContent = "Sort by Priority";
+            upperPanel.appendChild(sortButtonB);
+            sortButtonB.addEventListener("click", () => {
+                projects.projectsList[projIndex].sortItemsByDate();
+                projects.projectsList[projIndex].sortItemsByPriority();
+                renderTaskList();
             })
         }
     }
@@ -146,6 +233,7 @@ const front = (function () {
         newButton.addEventListener("click", () => {
             newTaskExpand();
             submit.addEventListener("click", addToList);
+            cancel.addEventListener("click", () => cancelForm());
             titleInput.addEventListener("keypress", function (e) {
                 if (e.key === "Enter") {
                     addToList(e);
@@ -196,6 +284,7 @@ const front = (function () {
         newProjectButton();
     }
 
+
     function renderTaskList() {
         //debugger;
         let anchor = document.querySelector("#content")
@@ -214,8 +303,20 @@ const front = (function () {
 
             let listUpper = document.createElement("div");
             listUpper.classList.add("listUpper");
+            listUpper.id = `list-${i}`
             listUpper.textContent = projects.projectsList[index].itemList[i].title;
+            listUpper.addEventListener("click", (e) => {
+                if (e.path[0] === listUpper) {
+                    projects.projectsList[index].markAsDone(i);
+                    renderTaskList()
+                }
+            })
             item.appendChild(listUpper);
+
+            if (projects.projectsList[index].itemList[i].done === true) {
+                listUpper.classList.add("taskDoneText");
+            }
+            
 
             let pressZone = document.createElement("div");
             pressZone.classList.add("pressZone");
@@ -282,9 +383,13 @@ function editTask(domElement, listItem, index) {
 
     // Add event listeners here.
     let updateButton = document.querySelector(`#editSubmit-${index}`)
+    let cancelButton = document.querySelector(`#editCancel-${index}`)
     let titleInput = document.getElementById(`titleInputEdit-${index}`)
     updateButton.addEventListener("click", (e) => {
         editToList(e, index);
+    })
+    cancelButton.addEventListener("click", () => {
+        cancelForm(index);
     })
     titleInput.addEventListener("keypress", function (e) {
         if (e.key === "Enter") {
@@ -377,4 +482,13 @@ function deleteProjectConfirmation() {
         document.body.removeChild(modal);
         document.body.removeChild(modalBackground);
     })
+}
+
+
+function cancelForm(index) {
+    if (index === undefined) {
+        front.renderTaskList(projects);
+    } else {
+        front.renderTaskList(projects);
+    }
 }
