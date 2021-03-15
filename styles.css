@@ -45,10 +45,12 @@ em {
 
 .projectLabel {
     color: #6e6e6e;
-    display: inline-block;
+    
     font-size: 20px;
     margin-bottom: 10px;
     margin-left: 20px;
+    margin-right: auto;
+    align-self:flex-end;
 }
 
 .listWrapperOuter {
@@ -58,260 +60,11 @@ em {
 
 .upperPanel {
     display: flex;
-}
-
-/**** BUTTONS ****/
-.projectButton {
-    color: #6e6e6e;
-    position: relative;
-    text-align: center;
-    background-color: #ffffff;
-    border: 1px solid #cacaca;
-    border-radius: 8px;
-    cursor: pointer;
-    padding: 5px 0px;
-    width: 200px;
-    margin-bottom: 10px;
-}
-.projectButton::before {
-    position: absolute;
-    content: '';
-    background-color: #cacaca;
-    border: 1px solid #cacaca;
-    border-radius: 8px;
-    left: -1px;
-    top: 6px;
-    width: 200px;
-    height: 25px;
-    z-index: -1;
-}
-.projectButton:active::before {
-    top: 0px;
-}
-.projectButton:active {
-    top: 2px;
+    align-items:center;
+    justify-content: flex-end;
 }
 
 
-.pressed {
-    position: relative;
-    text-align: center;
-    color: #6e6e6e;
-    background-color: #f1f1f7;
-    border: 1px solid #e2e2e2;
-    border-radius: 8px;
-    cursor: pointer;
-    padding: 5px 0px;
-    width: 200px;
-    top: 2px;
-    margin-bottom: 10px;
-}
-
-.pressed::before {
-    position: absolute;
-    content: '';
-    background-color: #cacaca;
-    border: 1px solid #cacaca;
-    border-radius: 8px;
-    left: -1px;
-    top: 3px;
-    width: 200px;
-    height: 25px;
-    z-index: -1;
-}
-/*
-.projectDeleteButton {
-    background-color: thistle;
-    display: inline-block;
-    margin-left: auto;
-    margin-right: 10px;
-}
-*/
-
-.projectDeleteButton {
-    color: #6e6e6e;
-    font-size: 10pt;
-    position: relative;
-    text-align: center;
-    background-color: #ffffff;
-    border: 1px solid #cacaca;
-    border-radius: 8px;
-    cursor: pointer;
-    padding: 5px 0px;
-    width: 50px;
-    margin: 0px 10px 10px auto;
-}
-
-.projectDeleteButton:hover {
-    color: #ffffff;
-    font-size: 10pt;
-    position: relative;
-    top: -2px;
-    text-align: center;
-    background-color: #ff9090;
-    border: 1px solid #ff5a5a;
-    border-radius: 8px;
-    cursor: pointer;
-    padding: 5px 0px;
-    width: 50px;
-    margin: 0px 10px 10px auto;
-}
-.projectDeleteButton:hover::before {
-    position: absolute;
-    content: '';
-    background-color: #ff5a5a;
-    border: 1px solid #ff5a5a;
-    border-radius: 8px;
-    left: -1px;
-    top: 2px;
-    width: 50px;
-    height: 25px;
-    z-index: -1;
-}
-.projectDeleteButton:active::before {
-    top: 0px;
-}
-.projectDeleteButton:active {
-    top: 0px;
-}
-
-
-.projectNewButton {
-    color: #c4c4c4;
-    position: relative;
-    text-align: center;
-    border: 1px dashed #cacaca;
-    border-radius: 8px;
-    cursor: pointer;
-    padding: 5px 0px;
-    width: 200px;
-    margin-bottom: 10px;
-}
-
-.projectNewButtonPressed {
-    color: #c4c4c4;
-    position: relative;
-    text-align: center;
-    border: 1px dashed #cacaca;
-    border-radius: 8px;
-    cursor: pointer;
-    padding: 1px 0px;
-    width: 200px;
-    margin-bottom: 10px;
-}
-
-.projectInput {
-    color: #6e6e6e;
-    text-align: center;
-    font-family: Helvetica-Condensed;
-    font-size: 12pt;
-    padding: 2px;
-    border-style: none;
-    margin: 6px 0px 6px 0px;
-}
-.projectInput:focus {
-    outline: none;
-}
-
-.addButton {
-    color: #ffffff;
-    font-size: 10pt;
-    position: relative;
-    text-align: center;
-    background-color: #90a4ff;
-    border: 1px solid #5a78ff;
-    border-radius: 8px;
-    cursor: pointer;
-    padding: 5px 0px;
-    width: 50px;
-    margin-bottom: 10px;
-    margin-left:auto;
-}
-.addButton::before {
-    position: absolute;
-    content: '';
-    background-color: #5a78ff;
-    border: 1px solid #5a78ff;
-    border-radius: 8px;
-    left: -1px;
-    top: 2px;
-    width: 50px;
-    height: 25px;
-    z-index: -1;
-}
-.addButton:active::before {
-    top: 0px;
-}
-.addButton:active {
-    top: 2px;
-}
-
-
-.deleteButton {
-    color: #ffffff;
-    font-size: 10pt;
-    position: relative;
-    text-align: center;
-    background-color: #ff9090;
-    border: 1px solid #ff5a5a;
-    border-radius: 8px;
-    cursor: pointer;
-    padding: 5px 0px;
-    width: 50px;
-    margin-bottom: 10px;
-    margin-left: 5px;
-}
-.deleteButton::before {
-    position: absolute;
-    content: '';
-    background-color: #ff5a5a;
-    border: 1px solid #ff5a5a;
-    border-radius: 8px;
-    left: -1px;
-    top: 2px;
-    width: 50px;
-    height: 25px;
-    z-index: -1;
-}
-.deleteButton:active::before {
-    top: 0px;
-}
-.deleteButton:active {
-    top: 2px;
-}
-
-.editButton {
-    color: #ffffff;
-    font-size: 10pt;
-    position: relative;
-    text-align: center;
-    background-color: #90a4ff;
-    border: 1px solid #5a78ff;
-    border-radius: 8px;
-    cursor: pointer;
-    padding: 5px 0px;
-    width: 50px;
-    margin-bottom: 10px;
-    margin-left:auto;
-}
-.editButton::before {
-    position: absolute;
-    content: '';
-    background-color: #5a78ff;
-    border: 1px solid #5a78ff;
-    border-radius: 8px;
-    left: -1px;
-    top: 2px;
-    width: 50px;
-    height: 25px;
-    z-index: -1;
-}
-.editButton:active::before {
-    top: 0px;
-}
-.editButton:active {
-    top: 2px;
-}
 
 
 
@@ -331,6 +84,12 @@ em {
     color: #6e6e6e;
 }
 
+
+.taskDoneText {
+    color: rgba(0, 0, 0, 0.281);
+    text-decoration: line-through;
+}
+
 .listUpper {
     display: flex;
     align-items: baseline;
@@ -347,7 +106,6 @@ em {
 .pressZone {
     margin-left: auto;
     position: relative;
-    background-color: rgb(255, 255, 255);
     padding: 8px 8px 8px 25px;
 
 }
@@ -442,6 +200,302 @@ textarea.notes {
     resize:vertical;
 }
 
+/**** BUTTONS ****/
+.projectButton {
+    color: #6e6e6e;
+    position: relative;
+    text-align: center;
+    background-color: #ffffff;
+    border: 1px solid #cacaca;
+    border-radius: 8px;
+    cursor: pointer;
+    padding: 5px 0px;
+    width: 200px;
+    margin-bottom: 10px;
+}
+.projectButton::before {
+    position: absolute;
+    content: '';
+    background-color: #cacaca;
+    border: 1px solid #cacaca;
+    border-radius: 8px;
+    left: -1px;
+    top: 6px;
+    width: 200px;
+    height: 25px;
+    z-index: -1;
+}
+.projectButton:active::before {
+    top: 0px;
+}
+.projectButton:active {
+    top: 2px;
+}
+
+
+.pressed {
+    position: relative;
+    text-align: center;
+    color: #6e6e6e;
+    background-color: #f1f1f7;
+    border: 1px solid #e2e2e2;
+    border-radius: 8px;
+    cursor: pointer;
+    padding: 5px 0px;
+    width: 200px;
+    top: 2px;
+    margin-bottom: 10px;
+}
+
+.pressed::before {
+    position: absolute;
+    content: '';
+    background-color: #cacaca;
+    border: 1px solid #cacaca;
+    border-radius: 8px;
+    left: -1px;
+    top: 3px;
+    width: 200px;
+    height: 25px;
+    z-index: -1;
+}
+
+
+.projectDeleteButton {
+    color: #6e6e6e;
+    font-size: 10pt;
+    position: relative;
+    text-align: center;
+    background-color: #ffffff;
+    border: 1px solid #cacaca;
+    border-radius: 8px;
+    cursor: pointer;
+    padding: 5px 0px;
+    width: 50px;
+    margin: 0px 0px 10px 10px;
+}
+
+.projectDeleteButton:hover {
+    color: #ffffff;
+    font-size: 10pt;
+    position: relative;
+    top: -2px;
+    text-align: center;
+    background-color: #ff9090;
+    border: 1px solid #ff5a5a;
+    border-radius: 8px;
+    cursor: pointer;
+    padding: 5px 0px;
+    width: 50px;
+    
+}
+.projectDeleteButton:hover::before {
+    position: absolute;
+    content: '';
+    background-color: #ff5a5a;
+    border: 1px solid #ff5a5a;
+    border-radius: 8px;
+    left: -1px;
+    top: 2px;
+    width: 50px;
+    height: 25px;
+    z-index: -1;
+}
+.projectDeleteButton:active::before {
+    top: 0px;
+}
+.projectDeleteButton:active {
+    top: 0px;
+}
+
+.projectSortButton {
+    color: #6e6e6e;
+    font-size: 10pt;
+    position: relative;
+    text-align: center;
+    background-color: #ffffff;
+    border: 1px solid #cacaca;
+    border-radius: 8px;
+    cursor: pointer;
+    padding: 5px 0px;
+    width: 95px;
+    margin: 0px 0px 10px 10px;
+}
+
+.projectSortButton:hover {
+    color: #ffffff;
+    font-size: 10pt;
+    position: relative;
+    top: -2px;
+    text-align: center;
+    background-color: #90a4ff;
+    border: 1px solid #5a78ff;
+    border-radius: 8px;
+    cursor: pointer;
+    padding: 5px 0px;
+    width: 95px;
+}
+.projectSortButton:hover::before {
+    position: absolute;
+    content: '';
+    background-color: #5a78ff;
+    border: 1px solid #5a78ff;
+    border-radius: 8px;
+    left: -1px;
+    top: 2px;
+    width: 95px;
+    height: 25px;
+    z-index: -1;
+}
+.projectSortButton:active::before {
+    top: 0px;
+}
+.projectSortButton:active {
+    top: 0px;
+}
+
+
+.projectNewButton {
+    color: #c4c4c4;
+    position: relative;
+    text-align: center;
+    border: 1px dashed #cacaca;
+    border-radius: 8px;
+    cursor: pointer;
+    padding: 5px 0px;
+    width: 200px;
+    margin-bottom: 10px;
+}
+
+.projectNewButtonPressed {
+    color: #c4c4c4;
+    position: relative;
+    text-align: center;
+    border: 1px dashed #cacaca;
+    border-radius: 8px;
+    cursor: pointer;
+    padding: 1px 0px;
+    width: 200px;
+    margin-bottom: 10px;
+}
+
+.projectInput {
+    color: #6e6e6e;
+    text-align: center;
+    font-family: Helvetica-Condensed;
+    font-size: 12pt;
+    padding: 2px;
+    border-style: none;
+    margin: 6px 0px 6px 0px;
+}
+.projectInput:focus {
+    outline: none;
+}
+
+.addButton {
+    color: #ffffff;
+    font-size: 10pt;
+    position: relative;
+    text-align: center;
+    background-color: #90a4ff;
+    border: 1px solid #5a78ff;
+    border-radius: 8px;
+    cursor: pointer;
+    padding: 5px 0px;
+    width: 50px;
+    margin-bottom: 10px;
+    margin-left:5px;
+}
+.addButton::before {
+    position: absolute;
+    content: '';
+    background-color: #5a78ff;
+    border: 1px solid #5a78ff;
+    border-radius: 8px;
+    left: -1px;
+    top: 2px;
+    width: 50px;
+    height: 25px;
+    z-index: -1;
+}
+.addButton:active::before {
+    top: 0px;
+}
+.addButton:active {
+    top: 2px;
+}
+
+
+.deleteButton {
+    color: #ffffff;
+    font-size: 10pt;
+    position: relative;
+    text-align: center;
+    background-color: #ff9090;
+    border: 1px solid #ff5a5a;
+    border-radius: 8px;
+    cursor: pointer;
+    padding: 5px 0px;
+    width: 50px;
+    margin-bottom: 10px;
+    margin-left: 5px;
+}
+.deleteButton::before {
+    position: absolute;
+    content: '';
+    background-color: #ff5a5a;
+    border: 1px solid #ff5a5a;
+    border-radius: 8px;
+    left: -1px;
+    top: 2px;
+    width: 50px;
+    height: 25px;
+    z-index: -1;
+}
+.deleteButton:active::before {
+    top: 0px;
+}
+.deleteButton:active {
+    top: 2px;
+}
+
+.editButton {
+    color: #ffffff;
+    font-size: 10pt;
+    position: relative;
+    text-align: center;
+    background-color: #90a4ff;
+    border: 1px solid #5a78ff;
+    border-radius: 8px;
+    cursor: pointer;
+    padding: 5px 0px;
+    width: 50px;
+    margin-bottom: 10px;
+    margin-left:auto;
+    text-decoration: none;
+}
+.editButton::before {
+    position: absolute;
+    content: '';
+    background-color: #5a78ff;
+    border: 1px solid #5a78ff;
+    border-radius: 8px;
+    left: -1px;
+    top: 2px;
+    width: 50px;
+    height: 25px;
+    z-index: -1;
+}
+.editButton:active::before {
+    top: 0px;
+}
+.editButton:active {
+    top: 2px;
+}
+
+
+
+/**** MODAL ****/
 
 .modalBackground {
     position: absolute;
@@ -481,4 +535,84 @@ textarea.notes {
 
 .ok {
     margin-top: 20px;
+}
+
+.formButtonContainer {
+    display: flex;
+    justify-content: flex-end;
+}
+
+
+
+
+@media screen and (max-width: 600px) {
+    body {
+        background-color: rgb(255, 255, 255);
+    }
+
+    .headingWrapper {
+        height: 0px;
+    }
+
+    .mainWrapper {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .listWrapperOuter {
+        margin: 5%;
+        width: auto;
+    }
+    .content {
+        margin: 0px;
+    }
+
+    .listItem {
+        margin: 0px 0px 5px 0px;
+    }
+
+    .projectWrapper {
+        margin: 5%;
+    }
+
+
+    .modalBackground {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+
+        background-color: rgba(255, 255, 255, 0.5);
+    }
+    
+    .modal {
+        display: flex;
+        position: absolute;
+        background-color: rgb(255, 255, 255);
+        min-width: 320px;
+        width: 100%;
+        height: 100%;
+        top: 0%;
+        left: 0%;
+        border: 1px solid #cacaca;
+        border-radius: 0px;
+        align-content: center;
+ 
+    }
+    .modalButtons {
+        margin: 5% auto 5% auto;
+    }
+
+    .textBox {
+        display: flex;
+        flex-direction: column;
+        align-content: center;
+        justify-content: center;
+        color: #6e6e6e;
+        margin: auto;
+        
+        
+       
+        
+    }
+
 }
