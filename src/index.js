@@ -3,8 +3,7 @@ import newProjectExpand from './newProjectExpand';
 import renderProjectsList from './renderProjectsList';
 import expandTask from './expandTask';
 import colapseTask from './colapseTask';
-
-
+import renderDelConfirm from './renderDelConfirm';
 
 // Project list module. ONE list of projects, where each project contains a list of tasks.
 const projects = {
@@ -20,7 +19,6 @@ const projects = {
         return this.projectsList[this.activeProjectIndex].projectTitle;
     }
 }
-
 
 class Project {
     constructor (projectTitle) {
@@ -83,12 +81,7 @@ class Project {
             else return -1;
         })
     }
-
-
-
 }
-
-
 
 class Task {
     constructor (title, notes, dateDue, priority, projectName) {
@@ -107,30 +100,24 @@ class Task {
             this.done = false;
         }
     }
-
 }
+
 // Make new filler projects and tasks.
 const defaultProject = new Project('Default');
-const musicProject = new Project('Music Project');
-const example1 = new Task ('Make pancakes', '...', '2021-03-11', 'Low', 'Default');
+const example1 = new Task ('Make pancakes', 'Mix flour, eggs and milk in a bowl.', '2021-03-11', 'Low', 'Default');
 const example2 = new Task ('Heat pan', 'First thing in the morning', '2021-03-10', 'High', 'Default');
-const example3 = new Task ('Eat pancakes', '...', '2021-03-12', 'Low', 'Default');
-const example4 = new Task ('Play concert', 'Before bed.', '2021-03-19', 'High', 'Music Project');
-const example5 = new Task ('Tune guitar', '...', '2021-03-15', 'Medium', 'Music Project');
-const example6 = new Task ('Practise music', '...', '2021-03-18', 'Low', 'Music Project');
+const example3 = new Task ('Eat pancakes', 'Remember lemon and sugar.', '2021-03-12', 'Low', 'Default');
 projects.add(defaultProject);
-projects.add(musicProject);
 defaultProject.add(example1);
 defaultProject.add(example2);
 defaultProject.add(example3);
-musicProject.add(example4);
-musicProject.add(example5);
-musicProject.add(example6);
+
 
 
 // Interface Module. Revealing module pattern.
-const front = (function () {
+(function () {
 
+    // Functions below executed at first run.
     renderProjectsList(projects);
     projectsListListeners();
     renderTaskList();
@@ -174,8 +161,6 @@ const front = (function () {
             deleteButton.addEventListener("click", () => {
                 deleteProjectConfirmation();
             })
-
-
         }
 
         function addSortingButtons () {
@@ -201,26 +186,58 @@ const front = (function () {
         }
     }
 
-    function addToList(value) {
+    function amendList(value, index) {
         let title;
         let notes;
         let dateDue;
         let priority;
         let projectName = projects.activeProjectName();
-        if (value.type === "click" || value.key === "Enter") {
-            title = document.querySelector("#titleInput").value;
-            notes = document.querySelector("#notes").value;
-            dateDue = document.querySelector("#dateDue").value;
-            priority = document.querySelector("#priority").value;
-            if (!title) return;
+        let indexSub;
+        if (index === undefined) {
+            indexSub = "";
         } else {
-            title = value
+            indexSub = `Edit-${index}`
         }
+
+        if (value.type === "click" || value.key === "Enter") {
+            title = document.querySelector(`#titleInput${indexSub}`).value;
+            notes = document.querySelector(`#notes${indexSub}`).value;
+            dateDue = document.querySelector(`#dateDue${indexSub}`).value;
+            priority = document.querySelector(`#priority${indexSub}`).value;
+            if (!title) return;
+        } 
         let item = new Task (title, notes, dateDue, priority, projectName);
-        let index = projects.activeProjectIndex;
-        projects.projectsList[index].add(item);
-        document.querySelector("#titleInput").value = "";
+        let projectIndex = projects.activeProjectIndex;
+
+        if (index === undefined) {
+            projects.projectsList[projectIndex].add(item);
+            document.querySelector("#titleInput").value = "";
+        } else {
+            projects.projectsList[projectIndex].update(item, index);
+        }
         renderTaskList();
+    }
+
+    function editTask(domElement, listItem, index) {
+        const anchor = domElement;
+        anchor.innerHTML = "";
+        newTaskExpand(domElement, listItem, index);
+    
+        // Add event listeners.
+        let updateButton = document.querySelector(`#editSubmit-${index}`)
+        let cancelButton = document.querySelector(`#editCancel-${index}`)
+        let titleInput = document.getElementById(`titleInputEdit-${index}`)
+        updateButton.addEventListener("click", (e) => {
+            amendList(e, index);
+        })
+        cancelButton.addEventListener("click", () => {
+            cancelForm(index);
+        })
+        titleInput.addEventListener("keypress", function (e) {
+            if (e.key === "Enter") {
+                amendList(e, index);
+            }
+        });
     }
 
     function newTaskButton() {
@@ -232,11 +249,13 @@ const front = (function () {
         anchor.appendChild(newButton);
         newButton.addEventListener("click", () => {
             newTaskExpand();
-            submit.addEventListener("click", addToList);
+            submit.addEventListener("click", (e) => {
+                amendList(e);
+            })
             cancel.addEventListener("click", () => cancelForm());
             titleInput.addEventListener("keypress", function (e) {
                 if (e.key === "Enter") {
-                    addToList(e);
+                    amendList(e);
                 }
             });
         })
@@ -265,12 +284,8 @@ const front = (function () {
                 })
             })
             anchor.appendChild(newButton);
-
-
         }
-
     }
-
 
     function addToProjectsList (input) {
         projects.activeProjectIndex = projects.projectsList.length;
@@ -284,23 +299,41 @@ const front = (function () {
         newProjectButton();
     }
 
+    function deleteProjectConfirmation() {
+        let index = projects.activeProjectIndex;
+        // Render confirmation and get objects for event listeners.
+        let domObjects = renderDelConfirm (projects, index)
+    
+        domObjects.modalBackground.addEventListener("click", () => {
+            document.body.removeChild(domObjects.modal);
+            document.body.removeChild(domObjects.modalBackground);
+        })
+        domObjects.okButton.addEventListener("click", () => {
+            projects.delete(index);
+            projects.activeProjectIndex = 0;
+            updateProjectListTitle(0);
+            renderProjectsList(projects);
+            document.body.removeChild(domObjects.modal);
+            document.body.removeChild(domObjects.modalBackground);
+            projectsListListeners();
+            renderTaskList();
+            newProjectButton();
+        })
+    
+        domObjects.cancelButton.addEventListener("click", () => {
+            document.body.removeChild(domObjects.modal);
+            document.body.removeChild(domObjects.modalBackground);
+        })
+    }
 
     function renderTaskList() {
-        //debugger;
         let anchor = document.querySelector("#content")
-        //let expandedList = [];
-
-        // 1. Clear current renderTaskList.
         anchor.innerHTML = "";
-        
-        // 2. Check which project is currently active.
         let index = projects.activeProjectIndex;
 
-        // 3. Populate renderTaskList with tasks from current/ active project.
         for (let i = 0; i < projects.projectsList[index].itemList.length; i++) {
             let item =  document.createElement("li");
             item.classList.add("listItem");
-
             let listUpper = document.createElement("div");
             listUpper.classList.add("listUpper");
             listUpper.id = `list-${i}`
@@ -317,7 +350,6 @@ const front = (function () {
                 listUpper.classList.add("taskDoneText");
             }
             
-
             let pressZone = document.createElement("div");
             pressZone.classList.add("pressZone");
 
@@ -356,18 +388,11 @@ const front = (function () {
             })
             anchor.appendChild(item);
         }
-        // 4. Add new task button to end of list.
         newTaskButton();
     }
 
-    return {
-        addToList: addToList,
-        renderTaskList: renderTaskList,
-        projectsListListeners: projectsListListeners,
-        updateProjectListTitle: updateProjectListTitle,
-        renderProjectsList: renderProjectsList,
-        newProjectButton: newProjectButton,
-        // Add other public functions here.
+    function cancelForm() {
+            renderTaskList(projects);
     }
 
 })();
@@ -375,120 +400,12 @@ const front = (function () {
 
 
 
-function editTask(domElement, listItem, index) {
-    const anchor = domElement;
-    anchor.innerHTML = "";
-
-    newTaskExpand(domElement, listItem, index);
-
-    // Add event listeners here.
-    let updateButton = document.querySelector(`#editSubmit-${index}`)
-    let cancelButton = document.querySelector(`#editCancel-${index}`)
-    let titleInput = document.getElementById(`titleInputEdit-${index}`)
-    updateButton.addEventListener("click", (e) => {
-        editToList(e, index);
-    })
-    cancelButton.addEventListener("click", () => {
-        cancelForm(index);
-    })
-    titleInput.addEventListener("keypress", function (e) {
-        if (e.key === "Enter") {
-            editToList(e, index);
-        }
-    });
-}
 
 
-function editToList(value, index) {
-    let title;
-    let notes;
-    let dateDue;
-    let priority;
-    let projectName = projects.activeProjectName();
-    if (value.type === "click" || value.key === "Enter") {
-        title = document.querySelector(`#titleInputEdit-${index}`).value;
-        notes = document.querySelector(`#notesEdit-${index}`).value;
-        dateDue = document.querySelector(`#dateDueEdit-${index}`).value;
-        priority = document.querySelector(`#priorityEdit-${index}`).value;
-        if (!title) return;
-    } 
- 
-    let item = new Task (title, notes, dateDue, priority, projectName);
-    
-    let projectIndex = projects.activeProjectIndex;
-    projects.projectsList[projectIndex].update(item, index);
-
-    front.renderTaskList();
-}
 
 
-function deleteProjectConfirmation() {
-
-    let index = projects.activeProjectIndex;
-    let projectTitle = projects.projectsList[index].projectTitle;
 
 
-    let modalBackground = document.createElement("div");
-    modalBackground.classList.add("modalBackground");
-    document.body.appendChild(modalBackground);
-    
-
-    let modal = document.createElement("div");
-    modal.classList.add("modal");
-    let textBox = document.createElement("div");
-    textBox.innerHTML = `Are you sure you want to delete ${projectTitle}?<br>
-    All tasks in this project will be deleted permanently.`
-    textBox.classList.add("textBox");
-    modal.appendChild(textBox);
-    
-    let okButton = document.createElement("div");
-    okButton.classList.add("projectButton");
-    okButton.classList.add("modalButtons");
-    okButton.classList.add("ok");
-    okButton.textContent = "OK";
-    textBox.appendChild(okButton);
-
-    let cancelButton = document.createElement("div");
-    cancelButton.classList.add("projectButton");
-    cancelButton.classList.add("modalButtons");
-    cancelButton.textContent = "Cancel";
-    textBox.appendChild(cancelButton);
-
-    document.body.appendChild(modal);
 
 
-    modalBackground.addEventListener("click", () => {
-        document.body.removeChild(modal);
-        document.body.removeChild(modalBackground);
-    })
 
-    okButton.addEventListener("click", () => {
-        projects.delete(index);
-        projects.activeProjectIndex = 0;
-    
-        front.updateProjectListTitle(0);
-        renderProjectsList(projects);
-
-        document.body.removeChild(modal);
-        document.body.removeChild(modalBackground);
-        
-        front.projectsListListeners();
-        front.renderTaskList();
-        front.newProjectButton();
-
-    })
-
-    cancelButton.addEventListener("click", () => {
-        document.body.removeChild(modal);
-        document.body.removeChild(modalBackground);
-    })
-}
-
-
-function cancelForm(index) {
-    if (index === undefined) {
-        front.renderTaskList(projects);
-    } else {
-        front.renderTaskList(projects);
-    }
-}

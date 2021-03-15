@@ -20,11 +20,4 @@ function newProjectExpand(anchor) {
     return {input, buttonAdd};
 
 }
-
-// Module resposible for rendering new project inputs.
-// DOM elements are returned. 
-// Event listeners are added locally as they need access to local function: addToProjectsList.
-
-
-
 export default newProjectExpand

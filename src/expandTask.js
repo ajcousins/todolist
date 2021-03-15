@@ -1,7 +1,6 @@
 function expandTask (domItem, listObject, listIndex) {
     
     const anchor = domItem;
-
     const dateDue = listObject.dateDue;
     const dateFormat = `${dateDue[8]}${dateDue[9]}/${dateDue[5]}${dateDue[6]}/${dateDue[2]}${dateDue[3]}`
 
@@ -48,12 +47,5 @@ function expandTask (domItem, listObject, listIndex) {
     listLowerC.appendChild(editButton);
     listLowerC.appendChild(deleteButton);
     anchor.appendChild(listLowerC);
-
-
 }
-
-
-
-
-
 export default expandTask

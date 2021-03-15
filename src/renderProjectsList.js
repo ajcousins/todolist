@@ -1,9 +1,7 @@
 function renderProjectsList (projectsList) {
 
-  
     const listArray = projectsList.projectsList;
     const activeProjectIndex = projectsList.activeProjectIndex;
-
     const anchor = document.querySelector(".projectWrapper");
 
     anchor.innerHTML = "";
@@ -19,6 +17,4 @@ function renderProjectsList (projectsList) {
         anchor.appendChild(labelElement);
     }
 }
-
-
 export default renderProjectsList

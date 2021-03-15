@@ -113,5 +113,4 @@ function newTaskExpand(domElement, listItem, index) {
         document.getElementById("titleInput").focus();
     }
 }
-
 export default newTaskExpand
