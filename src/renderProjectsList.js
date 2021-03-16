@@ -1,20 +1,18 @@
-function renderProjectsList (projectsList) {
+function renderProjectsList(projectsList) {
+  const listArray = projectsList.projectsList;
+  const activeProjectIndex = projectsList.activeProjectIndex;
+  const anchor = document.querySelector('.projectWrapper');
 
-    const listArray = projectsList.projectsList;
-    const activeProjectIndex = projectsList.activeProjectIndex;
-    const anchor = document.querySelector(".projectWrapper");
+  anchor.innerHTML = '';
 
-    anchor.innerHTML = "";
-
-    for (let i = 0; i < listArray.length; i++) {
- 
-        let labelElement = document.createElement("div");
-        labelElement.setAttribute("class", "projectButton");
-        labelElement.textContent = listArray[i].projectTitle;
-        if (activeProjectIndex === i) {
-            labelElement.classList.add("pressed");
-        }
-        anchor.appendChild(labelElement);
+  for (let i = 0; i < listArray.length; i += 1) {
+    const labelElement = document.createElement('div');
+    labelElement.setAttribute('class', 'projectButton');
+    labelElement.textContent = listArray[i].projectTitle;
+    if (activeProjectIndex === i) {
+      labelElement.classList.add('pressed');
     }
+    anchor.appendChild(labelElement);
+  }
 }
-export default renderProjectsList
+export default renderProjectsList;

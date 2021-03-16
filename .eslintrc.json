@@ -1,0 +1,13 @@
+{
+  "extends": ["airbnb", "prettier"],
+  "plugins": ["prettier"],
+  "globals": {
+    "localStorage": true,
+    "document": true
+  },
+  "rules": {
+    "radix": "off",
+    "no-use-before-define": "off",
+    "prefer-destructuring": "off"
+  }
+}
