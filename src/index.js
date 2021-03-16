@@ -84,13 +84,13 @@ class Project {
 }
 
 class Task {
-    constructor (title, notes, dateDue, priority, projectName) {
+    constructor (title, notes, dateDue, priority, projectName, done) {
         this.title = title;
         this.notes = notes;
         this.dateDue = dateDue;
         this.priority = priority;
         this.projectName = projectName;
-        this.done = false;
+        this.done = done;
     }
 
     changeStatus () {
@@ -127,69 +127,54 @@ projects.add(defaultProject);
 
 
     function getLocalStorage () {
-        
         // First run
         if (localStorage.length == 0) {
-            console.log("Empty local storage. Populating with placeholder tasks.");
-
             // Add to program projects.
-            const example1 = new Task ('Make pancakes', 'Mix flour, eggs and milk in a bowl.', '2021-03-11', 'Low', 'Default');
-            const example2 = new Task ('Heat pan', 'First thing in the morning', '2021-03-10', 'High', 'Default');
-            const example3 = new Task ('Eat pancakes', 'Remember lemon and sugar.', '2021-03-12', 'Low', 'Default');
+            const example1 = new Task ('Make pancakes', 'Mix flour, eggs and milk in a bowl.', '2021-03-11', 'Low', 'Default', false);
+            const example2 = new Task ('Heat pan', 'First thing in the morning', '2021-03-10', 'High', 'Default', false);
+            const example3 = new Task ('Eat pancakes', 'Remember lemon and sugar.', '2021-03-12', 'Low', 'Default', false);
             defaultProject.add(example1);
             defaultProject.add(example2);
             defaultProject.add(example3);
             // Add to local storage.
-            for (let i = 0; i < projects.projectsList.length; i++) {
-                let serialised = JSON.stringify(projects.projectsList[i])
-                localStorage.setItem(`project-${i}`, serialised);
-            }
+            updateLocalStorage();
         } else {
-
             // Load up contents from local storage.
-
             for (let i = 0; i < localStorage.length; i++) {
-
                 let deSerialised = JSON.parse(localStorage.getItem(`project-${i}`));
-
                 if (i === 0) {
-                    console.log("Default project");
+                    // Pass default project. Already exists.
                 } else {
                     let project = new Project(deSerialised.projectTitle);
                     projects.add(project);
                 }
-                console.log("deSerialised", deSerialised);
                 for (let j = 0; j < deSerialised.itemList.length; j++) {
                     let item = new Task (
                         deSerialised.itemList[j].title,
                         deSerialised.itemList[j].notes,
                         deSerialised.itemList[j].dateDue,
                         deSerialised.itemList[j].priority,
-                        deSerialised.itemList[j].projectName
+                        deSerialised.itemList[j].projectName,
+                        deSerialised.itemList[j].done
                         )
                     projects.projectsList[i].add(item);
                 }
                 let serialised = JSON.stringify(projects.projectsList[i])
                 localStorage.setItem(`project-${i}`, serialised);
-    
             }
         }
-
-
-
-        console.log(projects);
-        
-        
         renderProjectsList(projects);
         projectsListListeners();
         renderTaskList();
         newProjectButton();
         updateProjectListTitle(0);
-
     }
 
     function updateLocalStorage() {
-
+        for (let i = 0; i < projects.projectsList.length; i++) {
+            let serialised = JSON.stringify(projects.projectsList[i])
+            localStorage.setItem(`project-${i}`, serialised);
+        }
     }
 
     function projectsListListeners() {
@@ -239,6 +224,7 @@ projects.add(defaultProject);
             upperPanel.appendChild(sortButtonA);
             sortButtonA.addEventListener("click", () => {
                 projects.projectsList[projIndex].sortItemsByDate();
+                updateLocalStorage();
                 renderTaskList();
             })
 
@@ -249,6 +235,7 @@ projects.add(defaultProject);
             sortButtonB.addEventListener("click", () => {
                 projects.projectsList[projIndex].sortItemsByDate();
                 projects.projectsList[projIndex].sortItemsByPriority();
+                updateLocalStorage();
                 renderTaskList();
             })
         }
@@ -274,7 +261,7 @@ projects.add(defaultProject);
             priority = document.querySelector(`#priority${indexSub}`).value;
             if (!title) return;
         } 
-        let item = new Task (title, notes, dateDue, priority, projectName);
+        let item = new Task (title, notes, dateDue, priority, projectName, false);
         let projectIndex = projects.activeProjectIndex;
 
         if (index === undefined) {
@@ -283,7 +270,7 @@ projects.add(defaultProject);
         } else {
             projects.projectsList[projectIndex].update(item, index);
         }
-        //updateLocalStorage();
+        updateLocalStorage();
         renderTaskList();
     }
 
@@ -385,18 +372,13 @@ projects.add(defaultProject);
             localStorage.removeItem(`project-${projects.activeProjectIndex}`);
             // project indexes on local storage need to be reset 0, 1, 2... no gaps.
             for (let i = 0; i < localStorage.length; i++) {
-                if (i < index) continue;
-                console.log(i);
- 
-                
                 if (localStorage.getItem(`project-${i}`)) {
-                    console.log(`project-${i} exists!`);
-                } else {
-                    let tempValue = localStorage.getItem(localStorage.key(i));
-                    console.log(`project-${i} does not exist!`);
-                    localStorage.setItem(`project-${i}`, tempValue);
+                    localStorage.removeItem(`project-${i}`)
                 }
-
+                if (projects.projectsList[i]) {
+                    let serialised = JSON.stringify(projects.projectsList[i])
+                    localStorage.setItem(`project-${i}`, serialised);
+                }
             }
 
             projects.activeProjectIndex = 0;
@@ -430,6 +412,7 @@ projects.add(defaultProject);
             listUpper.addEventListener("click", (e) => {
                 if (e.path[0] === listUpper) {
                     projects.projectsList[index].markAsDone(i);
+                    updateLocalStorage();
                     renderTaskList()
                 }
             })
@@ -464,6 +447,7 @@ projects.add(defaultProject);
                     deleteButton.addEventListener("click", () => {
                         let deleteIndex = deleteButton.id.split("-");
                         projects.projectsList[index].delete(deleteIndex[1]);
+                        updateLocalStorage();
                         renderTaskList();
                     })
 
@@ -483,18 +467,4 @@ projects.add(defaultProject);
     function cancelForm() {
             renderTaskList(projects);
     }
-
 })();
-
-
-
-
-
-
-
-
-
-
-
-
-
